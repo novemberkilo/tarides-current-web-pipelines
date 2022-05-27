@@ -12,6 +12,12 @@ depends: [
   "current" {>= "0.5"}
   "current_web" {>= "0.5"}
   "current_git" {>= "0.5"}
+  "alcotest" {with-test}
+  "qcheck-alcotest" {with-test}
+  "qcheck" {with-test}
+  "ppx_deriving_qcheck"
+  "ppx_import"
+  "ppx_deriving"
   "fmt"
   "routes"
   "odoc" {with-doc}

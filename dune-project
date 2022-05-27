@@ -27,5 +27,8 @@
   (alcotest :with-test)
   (qcheck-alcotest :with-test)
   (qcheck :with-test)
+  ppx_deriving_qcheck
+  ppx_import
+  ppx_deriving
   fmt
   routes))
