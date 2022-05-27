@@ -1,8 +1,15 @@
 module Generator = struct
   open QCheck
 
-  type job_result = [%import: State.job_result]
+  type 'output job_result = [%import: 'output Current_web_pipelines.State.job_result]
   [@@deriving qcheck]
+
+  type 'output job = [%import: 'output Current_web_pipelines.State.job]
+  [@@deriving qcheck]
+
+  let gen_name = Gen.(oneofl Corpus.muppets)
+
+  let gen_colour = Gen.(oneofl Corpus.colours)
 end
 
 let () =
