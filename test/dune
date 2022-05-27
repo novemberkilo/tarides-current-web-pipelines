@@ -1,0 +1,5 @@
+(test
+ (name quickcheck)
+ (modules quickcheck corpus)
+ (libraries current-web-pipelines qcheck alcotest qcheck-alcotest ppx_deriving_qcheck ppx_import)
+ (preprocess (staged_pps ppx_import ppx_deriving_qcheck)))

@@ -24,5 +24,8 @@
    (>= 0.5))
   (current_git
    (>= 0.5))
+  (alcotest :with-test)
+  (qcheck-alcotest :with-test)
+  (qcheck :with-test)
   fmt
   routes))
