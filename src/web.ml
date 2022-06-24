@@ -145,6 +145,17 @@ CREATE TABLE IF NOT EXISTS current_web_pipelines_index (
       Sqlite3.Data.[ TEXT pipeline_source; TEXT pipeline_id ]
 end
 
+module Metrics = struct
+  open Prometheus
+
+  let namespace = "tezos_ci"
+  let subsystem = "pipelines"
+
+  let pipeline_time =
+    let help = "Time pipeline ran for" in
+    Summary.v_label ~label_name:"result" ~help ~namespace ~subsystem "elapsed_time_seconds"
+end
+
 module StringMap = Map.Make (String)
 
 module Make (R : Renderer) = struct
@@ -263,7 +274,9 @@ module Make (R : Renderer) = struct
         state.runs <-
           SourceMap.add pipeline_source
             ((StringMap.add pipeline_id new_state) v)
-            state.runs
+            state.runs;
+    let meta = new_state.metadata in
+    Prometheus.Summary.observe (Metrics.pipeline_time pipeline_id) (Option.value meta.run_time.total ~default:0.0)
 
   let update_state (state : t) (new_state : pipeline_state Current.t) =
     let open Current.Syntax in
@@ -295,6 +308,10 @@ module Make (R : Renderer) = struct
       |> fun ({ metadata = user_meta, run_time; _ } as v) ->
       { v with metadata = { user_meta; run_time; creation_date } }
     in
+    let pipeline_label =
+      Fmt.str "{pipeline_id: %s}" pipeline_id
+    in
+(*     Prometheus.Summary.observe (Metrics.pipeline_time pipeline_label) (Float.of_int (Duration.to_sec (Duration.of_f (Option.value new_state.metadata.run_time.total ~default:0.0)))); *)
     set ~pipeline_source ~pipeline_id state new_state
 
   let set_active_sources (state : t)
